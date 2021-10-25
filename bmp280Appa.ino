@@ -7,6 +7,13 @@
 #define BMP_MISO (12)
 #define BMP_MOSI (11)
 #define BMP_CS   (7)
+#define PIN_LED   (5)
+
+unsigned long timePassed;
+
+bool apogee = false;
+bool *apogeeptr = &apogee; 
+int count = 0;
 
 Adafruit_BMP280 bmp; // I2C
 //Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
@@ -33,14 +40,44 @@ void setup() {
                   Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
                   Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+
+  timePassed = millis()/1000;
 }
 
 void loop() {
     delay(2000);
+
+    //bmp.readAltitude();
+    if(bmp.readAltitude() >= 800.00){ //Notify apogee and recovery deployment
+      Serial.print(timePassed);
+      Serial.print(" --> ");
+      Serial.print("Alt: ");
+      Serial.println(bmp.readAltitude());
+      Serial.println("Apogee Reached!");
+      Serial.println("Recovery Deployed!");
+      *apogeeptr = true;
+      count++;
+    }
+
+    else if (bmp.readAltitude() <=800.00 and count >=1){ //Perform decsending event
+      Serial.print(timePassed);
+      Serial.print(" --> ");
+      Serial.println(bmp.readAltitude());
+      Serial.println("Descending");
+      digitalWrite(PIN_LED, HIGH);
+      delay(500);
+      digitalWrite(PIN_LED, LOW);
+      delay(500);
+      digitalWrite(PIN_LED, HIGH);
+    }
+
+    
+
     
     readTemp("far");
     cardFile = SD.open("SDTest.rtf", FILE_WRITE);
     cardFile.println(logTemp("far"));
+    cardFile.close();
     readPress("pa");
 
     //Serial.print(F("Approx altitude = "));
