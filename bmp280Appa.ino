@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <SPI.h>
+#include<SD.h>
 #include <Adafruit_BMP280.h>
 
 #define BMP_SCK  (13)
@@ -11,11 +12,13 @@ Adafruit_BMP280 bmp; // I2C
 //Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
 //Adafruit_BMP280 bmp(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
 
+File cardFile;
+
 void setup() {
   Serial.begin(9600);
   Serial.println(F("BMP280 test"));
-  SD.begin();
-  cardFile = SD.open();
+  SD.begin(BMP_CS);
+  cardFile = SD.open("SDTest.rtf", FILE_WRITE); //Opens the file
 
   //if (!bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID)) {
   if (!bmp.begin()) {
@@ -35,13 +38,14 @@ void setup() {
 void loop() {
     delay(2000);
     
-    readTemp("f");
-    cardFile.println(logTemp());
+    readTemp("far");
+    cardFile = SD.open("SDTest.rtf", FILE_WRITE);
+    cardFile.println(logTemp("far"));
     readPress("pa");
 
-    Serial.print(F("Approx altitude = "));
-    Serial.print(bmp.readAltitude(1013.25)); /* Adjusted to local forecast! */
-    Serial.println(" m");
+    //Serial.print(F("Approx altitude = "));
+    //Serial.print(bmp.readAltitude(1013.25)); /* Adjusted to local forecast! */
+    //Serial.println(" m");
 
     Serial.println();
     delay(2000);
@@ -49,43 +53,47 @@ void loop() {
 
 //Reads temperature @param option 
 void readTemp(String option){
-  if (option.toLowerCase() == "f"){
+  if (option == "far"){
     Serial.print(F("Temperature = "));
     Serial.print(bmp.readTemperature()*(9/5)+32);
     Serial.println(" *F");
   }
+}
 
  //Logs temperature to SD card @param option @return float temp
  float logTemp(String option){
-    if(option.toLowerCase() == "f"){
-      fTemp = bmp.readTemperature()*(9/5)+32;
+    if(option == "far"){
+      float fTemp = bmp.readTemperature()*(9/5)+32;
+      cardFile.print("Temperature: ");
+      cardFile.print(fTemp);
+      cardFile.println(" *F");
+      cardFile.close();
       return fTemp;
     }
 
-    else if(option.toLowerCase() == "c"){
-      cTemp = bmp.readTemperature();
+    else if(option == "cel"){
+      float cTemp = bmp.readTemperature();
+      cardFile.print("Temperature: ");
+      cardFile.print(cTemp);
+      cardFile.println(" *C");
+      cardFile.close();
       return cTemp;
     }
 
-    else if(option.toLowerCase() == "k"){
-      kTemp = bmp.readTemperature()+273.15;
+    else if(option == "kel"){
+      float kTemp = bmp.readTemperature()+273.15;
+      cardFile.print("Temperature: ");
+      cardFile.print(kTemp);
+      cardFile.println(" K");
+      cardFile.close();
       return kTemp;
     }
+
+    else{
+      Serial.println("Option not available");
+      cardFile.close();
+  }
  }
-  else if (option.toLowerCase() == "c"){
-    Serial.print(bmp.readTemperature());
-    Serial.println(" *C");
-  }
-
-  else if (option.toLowerCase() == "k"){
-    Serial.print(bmp.readTemperature()+273.15)
-    Serial.println(" *K");
-  }
-
-  else{
-    Serial.println("Option not available");
-  }
-}
 
 //Reads pressure @param option 
 void readPress(String option){
