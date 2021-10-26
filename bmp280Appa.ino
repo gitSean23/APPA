@@ -24,6 +24,12 @@ File cardFile;
 void setup() {
   Serial.begin(9600);
   Serial.println(F("BMP280 test"));
+  Serial.println("Initializing SD");
+  if(!SD.begin(BMP_CS)){
+    Serial.println("Initialization unsuccessful");
+    while(true);
+  }
+  Serial.println("SD initialization successful!");
   SD.begin(BMP_CS);
   cardFile = SD.open("SDTest.rtf", FILE_WRITE); //Opens the file
 
@@ -41,25 +47,28 @@ void setup() {
                   Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
 
-  timePassed = millis()/1000;
+  timePassed = millis();
 }
 
 void loop() {
     delay(2000);
 
     //bmp.readAltitude();
-    if(bmp.readAltitude() >= 800.00){ //Notify apogee and recovery deployment
+    if(bmp.readAltitude() >= 803.00){ //Notify apogee and recovery deployment
       Serial.print(timePassed);
       Serial.print(" --> ");
       Serial.print("Alt: ");
       Serial.println(bmp.readAltitude());
-      Serial.println("Apogee Reached!");
-      Serial.println("Recovery Deployed!");
+      if(count == 1){
+        Serial.println("Apogee Reached!");
+        Serial.println("Recovery Deployed!");
+      }
       *apogeeptr = true;
       count++;
+      
     }
 
-    else if (bmp.readAltitude() <=800.00 and count >=1){ //Perform decsending event
+    else if (bmp.readAltitude() <=803.00 and count >=1){ //Perform decsending event
       Serial.print(timePassed);
       Serial.print(" --> ");
       Serial.println(bmp.readAltitude());
