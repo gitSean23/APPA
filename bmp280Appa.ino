@@ -93,6 +93,8 @@ void loop() {
     //Serial.print(bmp.readAltitude(1013.25)); /* Adjusted to local forecast! */
     //Serial.println(" m");
 
+    EDL(false, true);
+
     Serial.println();
     delay(2000);
 }
@@ -160,3 +162,51 @@ void readPress(String option){
     Serial.println(" Barr");
   }
 }
+
+
+
+int EDL(bool landed, bool activated){
+  if(bmp.readAltitude() == 50.00 && landed == false && activated){ //Ignition
+    Serial.println("Event --> Ignition");
+    return 1;
+  }
+
+  else if (bmp.readAltitude() == 65.00 && landed == false && activated){ //Liftoff
+    Serial.println("Event --> Liftoff!");
+    return 2;
+  }
+
+  else if ((bmp.readAltitude() >= 115.00 && bmp.readAltitude() <= 120.00) && (landed == false && activated)) { //Motor Burnout
+    Serial.println("Event --> Burnout");
+    return 3;
+  }
+
+  else if((bmp.readAltitude() >= 205.00 && bmp.readAltitude() <= 210.00) && (landed == false && activated)){ //Ejection Charge
+    Serial.println("Event --> Ejection Charge");
+    return 4;
+  }
+
+  else if ((bmp.readAltitude() == 300.00) && (landed == false && activated)){
+    Serial.println("Event --> Main Parachute Deployment");
+    return 5;
+  }
+
+  else if (bmp.readAltitude() == 50.00 && landed == true && activated){
+    Serial.println("Event --> Landed!");
+    return 6;
+  }
+
+  return 0;
+}
+
+//int safety(){
+  //if(bmp.readPressure() == 
+  //if pressure is too high
+      //print (too high);
+      //blink red LED
+      //adjust velocity value
+
+  //else
+    //print (pressure is fine)
+    //blink green LED
+//}
