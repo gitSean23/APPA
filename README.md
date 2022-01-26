@@ -5,7 +5,7 @@
 
 A rocket designed to compete in an internal club competition and to potentially compete in the FAR1030 comepition
 
-**Apogee:** 800 meters
+**Apogee:** 5K feet
 
 **Motor:** J-class
 
