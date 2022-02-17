@@ -7,14 +7,14 @@ A rocket designed to compete in an internal club competition and to potentially 
 
 **Apogee:** 5K feet
 
-**Motor:** J-class
+**Motors** 2 DC motors
 
-**Sensors:** BMP280, MPU6050, Wifi Module
+**Sensors:** BMP280, MPU6050, Magnetometer, 
 
 **Board:** Arduino Nano x2 
 
-**Experiment:** Entry, Descent, and Landing simulation 
+**Payload:** RC Drone and autonomous rover
 
-**Antenna:**  Yagi-Uda
+**Comms:**  
 
-External and internal cameras
+FPV Cameras
