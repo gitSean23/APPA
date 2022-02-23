@@ -4,8 +4,8 @@
 #ifndef pins_h
 #define pins_h
   
-#define trigPin   10  //set up trigger (transmit) pin as 9
-#define echoPin   11  //set up echo (receiver) pin as 10
+#define trigPin   10  //set up trigger (transmit) pin as 10
+#define echoPin   11  //set up echo (receiver) pin as 11
 #define enA       3  //needs to be PWM
 #define in1       4  
 #define in2       7  
