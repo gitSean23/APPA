@@ -45,6 +45,7 @@ void Rover::slower(int target){
     this->_motorB.decelerate(target);
 }
 
+//makes rover just start going straight
 void Rover::straight(){
 
     this->_motorA.motorForwards();
