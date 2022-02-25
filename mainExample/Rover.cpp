@@ -45,6 +45,15 @@ void Rover::slower(int target){
     this->_motorB.decelerate(target);
 }
 
+void Rover::straight(){
+
+    this->_motorA.motorForwards();
+    this->_motorB.motorForwards();
+    this->_motorB.accelerate();
+    this->_motorB.accelerate();
+
+}
+
 //configures rover to go left by making one forwards, and the other backwards then runs them at full speed
 void Rover::left(){
     this->_motorA.motorBackwards();

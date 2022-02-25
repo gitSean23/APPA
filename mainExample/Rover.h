@@ -17,6 +17,7 @@ class Rover{
         void faster(int target);
         void slower();
         void slower(int target);
+        void straight();
         void left();
         void right();
 };
